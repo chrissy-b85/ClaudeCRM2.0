@@ -2,12 +2,12 @@
 -- Description: Initial database setup for NDIS CRM
 -- Creates core tables: users, participants, providers, contacts
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- Enable pgcrypto extension for gen_random_uuid()
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Users table (staff/admin)
 CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Participants table
 CREATE TABLE IF NOT EXISTS participants (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     ndis_number VARCHAR(20) UNIQUE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS participants (
 
 -- Providers table
 CREATE TABLE IF NOT EXISTS providers (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     provider_number VARCHAR(50) UNIQUE,
     business_name VARCHAR(255) NOT NULL,
     trading_name VARCHAR(255),
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS providers (
 
 -- Contacts table (for participant-related contacts)
 CREATE TABLE IF NOT EXISTS contacts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID REFERENCES participants(id) ON DELETE CASCADE,
     contact_type VARCHAR(50) NOT NULL, -- 'guardian', 'carer', 'family', 'other'
     first_name VARCHAR(100) NOT NULL,
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS contacts (
 
 -- Audit log table
 CREATE TABLE IF NOT EXISTS audit_log (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     table_name VARCHAR(100) NOT NULL,
     record_id UUID NOT NULL,
     action VARCHAR(20) NOT NULL, -- INSERT, UPDATE, DELETE

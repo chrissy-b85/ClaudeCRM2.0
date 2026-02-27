@@ -3,7 +3,7 @@
 
 -- NDIS plan goals
 CREATE TABLE IF NOT EXISTS plan_goals (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id UUID NOT NULL REFERENCES ndis_plans(id) ON DELETE CASCADE,
     goal_title VARCHAR(255) NOT NULL,
     goal_description TEXT,
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS plan_goals (
 
 -- Goal progress notes
 CREATE TABLE IF NOT EXISTS goal_progress_notes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     goal_id UUID NOT NULL REFERENCES plan_goals(id) ON DELETE CASCADE,
     progress_rating INTEGER CHECK (progress_rating BETWEEN 1 AND 5),
     note_text TEXT NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS goal_progress_notes (
 
 -- Case notes (general participant notes not tied to a specific goal)
 CREATE TABLE IF NOT EXISTS case_notes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
     plan_id UUID REFERENCES ndis_plans(id),
     note_type VARCHAR(50) NOT NULL DEFAULT 'general', -- 'general', 'phone_call', 'meeting', 'email', 'incident', 'review'
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS case_notes (
 
 -- Plan review notes
 CREATE TABLE IF NOT EXISTS plan_review_notes (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id UUID NOT NULL REFERENCES ndis_plans(id) ON DELETE CASCADE,
     review_type VARCHAR(50) NOT NULL DEFAULT 'scheduled', -- 'scheduled', 'unscheduled', 'annual', 'participant_initiated'
     review_date DATE NOT NULL,

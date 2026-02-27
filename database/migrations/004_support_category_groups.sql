@@ -3,7 +3,7 @@
 
 -- Support category groups (high-level groupings)
 CREATE TABLE IF NOT EXISTS support_category_groups (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     group_code VARCHAR(20) UNIQUE NOT NULL,
     group_name VARCHAR(255) NOT NULL,
     group_description TEXT,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS support_category_groups (
 
 -- Support items (specific line items within categories)
 CREATE TABLE IF NOT EXISTS support_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     support_category_id UUID NOT NULL REFERENCES support_categories(id),
     support_category_group_id UUID REFERENCES support_category_groups(id),
     item_number VARCHAR(50) UNIQUE NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS support_items (
 
 -- Registration groups (NDIS provider registration groups)
 CREATE TABLE IF NOT EXISTS registration_groups (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     group_number VARCHAR(20) UNIQUE NOT NULL,
     group_name VARCHAR(255) NOT NULL,
     group_description TEXT,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS support_item_registration_groups (
 
 -- PACE support category mappings
 CREATE TABLE IF NOT EXISTS pace_category_mappings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     support_category_id UUID NOT NULL REFERENCES support_categories(id),
     pace_budget_name VARCHAR(255) NOT NULL,
     pace_support_category_number INTEGER NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS pace_category_mappings (
 
 -- PRODA support category mappings
 CREATE TABLE IF NOT EXISTS proda_category_mappings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     support_category_id UUID NOT NULL REFERENCES support_categories(id),
     proda_budget_name VARCHAR(255) NOT NULL,
     proda_support_category_number INTEGER NOT NULL,

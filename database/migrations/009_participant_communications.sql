@@ -3,7 +3,7 @@
 
 -- Communication channels/templates
 CREATE TABLE IF NOT EXISTS communication_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     template_name VARCHAR(255) NOT NULL,
     template_type VARCHAR(50) NOT NULL, -- 'email', 'sms', 'letter'
     subject VARCHAR(500),
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS communication_templates (
 
 -- Participant communications log
 CREATE TABLE IF NOT EXISTS participant_communications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
     plan_id UUID REFERENCES ndis_plans(id),
     communication_type VARCHAR(50) NOT NULL, -- 'email', 'sms', 'phone_call', 'letter', 'in_person', 'video_call'
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS participant_communications (
 
 -- Tasks and action items
 CREATE TABLE IF NOT EXISTS tasks (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID REFERENCES participants(id) ON DELETE CASCADE,
     plan_id UUID REFERENCES ndis_plans(id),
     task_type VARCHAR(50) DEFAULT 'general', -- 'general', 'follow_up', 'document_request', 'plan_review', 'service_booking', 'reporting'
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 
 -- Appointments and meetings
 CREATE TABLE IF NOT EXISTS appointments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
     appointment_type VARCHAR(50) NOT NULL, -- 'planning_meeting', 'review_meeting', 'support_coordination', 'provider_meeting', 'ndis_meeting', 'other'
     title VARCHAR(500),
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS appointments (
 
 -- Automated notifications/reminders
 CREATE TABLE IF NOT EXISTS notifications (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     notification_type VARCHAR(100) NOT NULL, -- 'plan_expiry', 'review_due', 'document_expiry', 'task_due', 'appointment_reminder'
     recipient_user_id UUID REFERENCES users(id),
     participant_id UUID REFERENCES participants(id),
