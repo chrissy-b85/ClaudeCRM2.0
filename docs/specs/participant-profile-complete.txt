@@ -1,0 +1,112 @@
+PARTICIPANT PROFILE - COMPLETE SPECIFICATION
+============================================
+NDIS CRM System | docs/specs/participant-profile-complete.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+The Participant Profile is the central record for each NDIS participant managed
+within the CRM. It captures all personal, disability, plan, and support details
+required for effective support coordination and service delivery.
+
+SECTIONS
+--------
+
+1. PERSONAL INFORMATION
+   - Full name (first, last)
+   - Date of birth
+   - Gender identity
+   - Preferred name / pronouns
+   - NDIS number (unique identifier)
+   - Cultural background
+   - Languages spoken
+   - Interpreter required (Y/N + language)
+   - Indigenous status (optional)
+
+2. CONTACT DETAILS
+   - Primary phone
+   - Mobile
+   - Email address
+   - Postal address (line 1, line 2, suburb, state, postcode)
+   - Residential address (if different)
+   - Communication preferences (phone / email / letter / SMS)
+
+3. EMERGENCY CONTACTS
+   - Name, relationship, phone (primary and secondary)
+   - Medical emergency notes (e.g., known allergies, conditions)
+
+4. DISABILITY INFORMATION
+   - Primary disability category
+   - Secondary disability (if applicable)
+   - Functional impact summary
+   - Behaviour support notes
+   - Communication needs
+   - Mobility / physical needs
+   - Dietary / health requirements
+
+5. LEGAL & GUARDIANSHIP
+   - Legal guardian / nominee (if applicable)
+   - Power of attorney details
+   - Guardianship order reference
+   - Decision-making capacity notes
+
+6. SUPPORT NETWORK
+   - Informal supports (family, carers, friends)
+   - Formal supports (providers, allied health)
+   - Support coordinator details
+   - Local area coordinator (LAC) details
+
+7. NDIS PLANS
+   - Active plan summary (dates, value, management type)
+   - Plan history (previous plans)
+   - Budget allocation by support category
+   - Plan goals summary
+
+8. SERVICES & PROVIDERS
+   - Active service agreements
+   - Provider list (with contact and service type)
+   - Service gaps / unmet needs
+
+9. DOCUMENTS
+   - Uploaded documents list (type, date, expiry)
+   - Required documents checklist
+
+10. CASE NOTES
+    - Recent notes summary
+    - Follow-ups outstanding
+
+11. COMMUNICATIONS LOG
+    - Recent contacts (type, date, summary)
+    - Upcoming appointments
+
+UI / UX NOTES
+-------------
+- Profile header displays: participant photo (optional), name, NDIS number, plan status badge
+- Tab navigation: Overview | Plan & Budget | Goals | Services | Documents | Notes | Communications
+- Quick action buttons: Add Note | Log Contact | New Task | Upload Document
+- Alerts/banners for: plan expiry within 90 days, expiring documents, outstanding follow-ups
+- All sensitive fields (DOB, medical info, bank details) masked by default with reveal toggle
+- Audit trail visible to admin users showing all field changes with timestamp and user
+
+VALIDATION RULES
+----------------
+- NDIS number: 9 digits, must be unique in the system
+- Date of birth: must be in the past, participant must be under 65 at plan start
+- Email: valid format if provided
+- Phone: Australian format (04xx xxx xxx or 0x xxxx xxxx)
+- Plan dates: end date must be after start date; no gaps or overlaps in plan history
+
+PERMISSIONS
+-----------
+- View profile: all active staff
+- Edit profile: assigned support coordinator, team leader, admin
+- View confidential notes: coordinator assigned to participant only + admin
+- Delete participant: admin only (soft delete, 7-year retention)
+
+INTEGRATIONS
+------------
+- NDIS myplace portal: plan data import / sync
+- PRODA: provider service booking lookup
+- PACE: budget balance queries
+- Document storage: secure file store (configurable: local, S3, Azure Blob)
+- Calendar: appointment creation from profile

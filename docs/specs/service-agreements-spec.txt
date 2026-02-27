@@ -1,0 +1,109 @@
+SERVICE AGREEMENTS - SPECIFICATION
+====================================
+NDIS CRM System | docs/specs/service-agreements-spec.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+Service agreements are legally binding documents between an NDIS participant
+(or their nominee) and a registered or unregistered provider, outlining the
+supports to be delivered, their cost, and the terms of service.
+
+The Service Agreements module allows support coordinators to:
+- Create and manage service agreements
+- Track agreement status (draft → active → expired/terminated)
+- Link agreements to the participant's active NDIS plan
+- Record signed agreement documents
+- Manage amendments and variations
+- Link service bookings to agreements
+
+AGREEMENT LIFECYCLE
+-------------------
+1. Draft        - Initial creation; editable; not yet sent to participant/provider
+2. Pending Sig  - Sent to participant and/or provider for signing
+3. Active       - Both parties have signed; services can be delivered
+4. Expired      - End date has passed; no new services under this agreement
+5. Terminated   - Terminated early by either party; reason must be recorded
+6. Superseded   - Replaced by a newer version/amendment
+
+AGREEMENT FIELDS
+----------------
+HEADER
+  - Agreement number (auto-generated: SA-YYYYMM-XXXX)
+  - Participant name + NDIS number
+  - Provider name + ABN / NDIS registration number
+  - Linked NDIS plan (plan period)
+  - Agreement type: Standard | Block Booking | Service Booking (NDIS portal)
+  - Agreement title (optional)
+  - Start date
+  - End date (or ongoing)
+  - Status
+
+SERVICES INCLUDED
+  - Support item number and name (from NDIS price guide)
+  - Support category
+  - Service description
+  - Frequency (e.g., 3 hours per week)
+  - Unit price (must not exceed NDIS price limit)
+  - Estimated total hours
+  - Estimated total cost
+  - Delivery location
+
+TERMS & CONDITIONS
+  - Cancellation policy (short notice: less than 48 hours is billable)
+  - Cancellation notice period (default: 2 business days)
+  - Payment terms (default: 7 days from invoice)
+  - Travel policy (provider travel: Y/N, km rate)
+  - Dispute resolution process
+  - Privacy and confidentiality
+  - Special conditions / custom clauses
+
+SIGNATURES
+  - Participant / guardian signed: name + date
+  - Provider representative signed: name + date + role
+  - Witness (optional)
+  - Digital signature support (upload signed PDF)
+
+AMENDMENTS
+  - Amendment number (incremental)
+  - Date of amendment
+  - Reason for amendment
+  - Summary of changes
+  - Who approved (staff user)
+  - Updated terms / line items
+
+UI / UX NOTES
+-------------
+- Agreement list view: filterable by participant, provider, status, date range
+- New agreement wizard: step-by-step form (Participant → Provider → Plan → Services → Terms → Review)
+- Price validation: flag if unit price exceeds current NDIS price guide limit
+- Duplicate detection: warn if similar agreement already exists for same participant/provider/category
+- PDF generation: create printable service agreement PDF from template
+- Email workflow: send draft to participant / provider for review
+- Status badge colour coding:
+    Draft = grey | Pending = orange | Active = green | Expired = red | Terminated = dark red
+
+VALIDATION RULES
+----------------
+- Unit price must not exceed NDIS price limit for the support item (+ 3.5% remote loading if applicable)
+- Agreement start date must fall within the linked plan period
+- Agreement end date must not exceed plan end date (warning if it does)
+- At least one service line item required to move from Draft to Pending
+- Both parties must sign before status can move to Active
+- Termination requires a reason and termination date
+
+LINKING TO NDIS SYSTEMS
+------------------------
+- Service Bookings: link NDIS myplace service booking numbers to agreements
+- PRODA: verify provider registration status before creating agreement
+- Budget: deduct estimated agreement value from available plan budget (committed amount)
+- Invoices: match invoices against agreement line items
+
+PERMISSIONS
+-----------
+- Create agreement: support coordinator, team leader, admin
+- Edit draft: creating coordinator + admin
+- Approve/activate: team leader, admin
+- Terminate: team leader, admin (with reason)
+- View: all staff (non-confidential agreements)
+- View sensitive terms: assigned coordinator + admin

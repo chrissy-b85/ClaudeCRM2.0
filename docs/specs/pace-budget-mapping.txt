@@ -1,0 +1,137 @@
+PACE BUDGET MAPPING
+====================
+NDIS CRM System | docs/specs/pace-budget-mapping.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+PACE (Planning and Carer Expenses) is the NDIS's internal planning and budget
+management system. From 2023 onwards, NDIS is transitioning participants to
+the PACE system which replaces the legacy myplace portal for plan management.
+
+This document outlines how NDIS support categories and budgets are structured
+within PACE and how the CRM maps to PACE budget categories.
+
+PACE BUDGET STRUCTURE
+----------------------
+PACE organises NDIS funding into three high-level budgets:
+
+1. CORE SUPPORTS BUDGET
+   Flexible funding for everyday supports.
+   Participant can move funding between Core categories (except Transport).
+
+   Category 01 - Assistance with Daily Life
+     - Personal care, in-home support, supported independent living (SIL)
+     - High intensity daily personal activities
+     - Community nursing care
+     - Household tasks
+
+   Category 02 - Transport
+     - Transport to access community, education, employment
+     - NOTE: Transport budget is FIXED - cannot be shifted to other Core categories
+
+   Category 03 - Consumables
+     - Everyday use items required due to disability
+     - Continence products, wound care, low-cost AT items (<$1,500 typically)
+
+   Category 04 - Assistance with Social, Economic and Community Participation
+     - Group activities, day programs, community access
+     - Innovative community participation
+
+2. CAPITAL SUPPORTS BUDGET
+   For higher-cost items and modifications. Quotes usually required.
+   NOT flexible - must be used for the specific approved purpose.
+
+   Category 05 - Assistive Technology
+     - Equipment to help with daily tasks (wheelchairs, communication devices, etc.)
+     - Maintenance, repair and rental of AT
+
+   Category 06 - Home Modifications
+     - Modifications to home to support independent living
+     - Specialist Disability Accommodation (SDA)
+
+3. CAPACITY BUILDING BUDGET
+   Supports to build skills and independence.
+   Generally NOT flexible between capacity building categories.
+
+   Category 07 - Support Coordination
+     - Support Coordination (general)
+     - Specialist Support Coordination (for complex needs)
+
+   Category 08 - Improved Living Arrangements
+     - Assistance to find suitable housing
+
+   Category 09 - Increased Social and Community Participation
+     - Building skills for community participation
+
+   Category 10 - Finding and Keeping a Job
+     - Employment supports, school leaver programs
+
+   Category 11 - Improved Health and Wellbeing
+     - Exercise physiology, diet advice
+
+   Category 12 - Improved Learning
+     - Transition to post-school options, training
+
+   Category 13 - Improved Life Choices
+     - Plan management (if participant chooses plan managed)
+     - Self-management support
+
+   Category 14 - Improved Daily Living Skills
+     - Therapies: OT, speech, psychology, physiotherapy, behaviour support
+     - Most common capacity building category
+
+   Category 15 - Improved Relationships
+     - Positive behaviour support, social skills programs
+
+PACE CRM FIELD MAPPING
+-----------------------
+CRM Field                    | PACE Field Name
+-----------------------------|----------------------------
+plan_id                      | NDIS Plan ID
+plan_start_date              | Plan Start Date
+plan_end_date                | Plan End Date
+allocated_amount (per cat)   | Approved Budget Amount
+spent_amount (per cat)       | Paid Claims Amount
+committed_amount (per cat)   | Committed Service Bookings
+pace_category_code           | Support Category Number
+management_type              | Plan Managed / Agency Managed / Self Managed
+
+BUDGET FLEXIBILITY RULES
+-------------------------
+Core Budget:
+  - Can move between Cat 01, 03, 04 within Core budget
+  - Cat 02 Transport is FIXED - separate sub-budget
+  - Cannot move Core funds to Capital or CB
+
+Capital Budget:
+  - AT and Home Mods are separate line items
+  - Cannot move to Core or CB
+
+Capacity Building:
+  - Each CB category is generally separate
+  - Some plans allow flexibility within CB (participant-specific)
+  - Cannot move CB funds to Core or Capital
+
+PACE vs LEGACY MYPLACE DIFFERENCES
+------------------------------------
+NOTE: PACE is actively replacing the legacy myplace portal. During transition,
+some participants remain on legacy myplace while newer participants are on PACE.
+Always confirm which system applies to each participant's plan.
+
+Feature                | Legacy myplace         | PACE (new system)
+-----------------------|------------------------|------------------------------
+Budget visibility      | Real-time              | Updated every 24-48 hours
+Service bookings       | Provider creates       | Coordinator or Provider creates
+Payment timing         | 3-5 business days      | Up to 5 business days
+Plan management        | Separate portal        | Integrated in PACE
+Claiming               | myplace provider portal| PACE provider portal
+Participant view       | myplace app            | NDIS app (updated)
+
+IMPLEMENTATION NOTES
+--------------------
+- When displaying budget balances, always note last-sync timestamp
+- Warn users that PACE balances may be up to 48 hours delayed
+- Always check the relevant NDIS portal (PACE or legacy myplace, depending on
+  the participant's plan) for real-time balance before creating large service bookings
+- CRM balance = approved amount minus paid claims minus committed service bookings

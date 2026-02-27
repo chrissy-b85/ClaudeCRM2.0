@@ -1,0 +1,127 @@
+PRICE GUIDE MODULE - SPECIFICATION
+====================================
+NDIS CRM System | docs/specs/price-guide-module.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+The Price Guide module manages NDIS support item pricing data within the CRM.
+The NDIS publishes an updated Support Catalogue (formerly Price Guide) at least
+once per financial year. The module allows:
+
+- Import of the NDIS Support Catalogue (CSV format)
+- Lookup of current prices by support item and state/territory
+- Validation of invoices and service agreements against price limits
+- Price change tracking between financial years
+
+NDIS PRICE GUIDE BACKGROUND
+-----------------------------
+- Published by the NDIA annually (typically July)
+- Lists all support items, their descriptions, unit of measure and price limits
+- Prices are maximum limits - providers can charge less but not more
+- Some items have different prices for different states/territories
+- Remote and Very Remote loadings apply (25% and 50% respectively for most items)
+- Price guide also covers: provider travel, cancellation policy, non-face-to-face
+
+SUPPORT CATALOGUE STRUCTURE
+-----------------------------
+Column Name           | Description
+----------------------|-----------------------------------------------
+Support Item Number   | Unique item identifier (e.g., 01_002_0107_1_1)
+Support Item Name     | Full descriptive name of the support
+Registration Group    | NDIS provider registration group number
+Support Category      | Category number (01-15)
+Unit                  | Unit of measure: H (hour), EA (each), D (day), WK (week)
+Quote Required        | Y/N - whether a quote is required before purchase
+Price ACT             | ACT state price
+Price NSW             | NSW state price
+Price NT              | NT state price
+Price QLD             | QLD state price
+Price SA              | SA state price
+Price TAS             | TAS state price
+Price VIC             | VIC state price
+Price WA              | WA state price
+Price National        | National price (when state-specific not available)
+Non-F2F               | Non-face-to-face support price
+Provider Travel       | Provider travel rate
+Short Notice Cancel   | Short notice cancellation rate (% of agreed price)
+NDIA Requested Reports| Reports requested by NDIA price
+Irregular SIL Supports| Irregular SIL/SDA supports
+
+SUPPORT ITEM NUMBER FORMAT
+---------------------------
+Format: CC_NNN_RRRR_F_V
+  CC   = Support Category (01-15)
+  NNN  = Registration Group (3 digits)
+  RRRR = Item number within group (4 digits)
+  F    = Funding type flag
+  V    = Version
+
+Example: 01_002_0107_1_1
+  01   = Category 01 (Assistance with Daily Life)
+  002  = Item 002 within category
+  0107 = Registration Group 0107 (Specialist Support Coordination)
+  1    = Funding flag
+  1    = Version 1
+
+MODULE FEATURES
+---------------
+
+1. PRICE GUIDE IMPORT
+   - Upload CSV file from NDIS website
+   - Select financial year / version
+   - Validate file format before import
+   - Preview import (first 20 rows)
+   - Run import (background job for large files)
+   - Import log with success / error counts
+   - Rollback option if import fails
+
+2. PRICE LOOKUP
+   - Search by item number or item name
+   - Filter by support category
+   - Filter by state/territory
+   - Show current price + previous year price (for comparison)
+   - Display all price variants (standard, remote, non-F2F, travel)
+
+3. PRICE VALIDATION
+   - Invoked when creating service agreement line items
+   - Invoked when reviewing invoices
+   - Compares entered price against current price guide
+   - Warning: price within 5% above limit
+   - Error: price exceeds limit
+   - Note: unregistered providers may charge more (plan/self managed only)
+
+4. PRICE CHANGE TRACKING
+   - Compare current and previous price guide
+   - Show items with price increases / decreases
+   - Export price change report (CSV)
+   - Notify coordinators of significant changes to commonly-used items
+
+5. PARTICIPANT STATE PRICING
+   - Participant's residential state determines applicable price
+   - Remote / Very Remote loading applied automatically based on postcode
+   - Override option with justification (for participant who moved states)
+
+REMOTE LOADING RULES
+---------------------
+- Remote loading (+25%)  : applies to most support items in remote areas
+- Very Remote (+50%)     : applies to most support items in very remote areas
+- Determine remoteness from NDIS Remoteness Indicator by postcode
+- Capital items (Cat 05, 06): no remote loading
+- Transport (Cat 02): no remote loading
+- Consumables (Cat 03): no remote loading
+
+UI / UX NOTES
+-------------
+- Price guide management page (admin only): upload, manage versions, set current
+- Price lookup available from support item search across all modules
+- Inline price validation in service agreement and invoice forms
+- Price guide version badge displayed in relevant forms (e.g., "Prices: 2024-25")
+- Last updated timestamp shown on all price displays
+
+PERMISSIONS
+-----------
+- View prices: all staff
+- Import price guide: admin only
+- Set current version: admin only
+- Override price limit: admin only (with reason logged)
