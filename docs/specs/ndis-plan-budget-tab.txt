@@ -1,0 +1,128 @@
+NDIS PLAN BUDGET TAB - SPECIFICATION
+======================================
+NDIS CRM System | docs/specs/ndis-plan-budget-tab.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+The NDIS Plan Budget Tab is a key view within the Participant Profile. It
+provides a real-time snapshot of the participant's current NDIS plan budget,
+showing allocations, spending, commitments and available balances across all
+support categories.
+
+PURPOSE
+-------
+- Give support coordinators instant visibility of budget status
+- Track spending against allocations
+- Identify over/underspending before it becomes an issue
+- Support decision-making for new service agreements and purchases
+- Prepare for plan reviews with up-to-date financial data
+
+TAB LOCATION
+------------
+Participant Profile > NDIS Plan tab > Budget sub-tab
+(or Participant Profile > Plan & Budget tab, with Budget as the default view)
+
+BUDGET OVERVIEW SECTION
+------------------------
+Displayed at the top of the Budget tab:
+
+  Plan Period:       [Start Date] to [End Date]
+  Plan Status:       Active / Expired / Pending
+  Management Type:   Plan Managed / Agency Managed / Self Managed / Combination
+  Total Plan Value:  $[total]
+  Total Available:   $[available]
+  Total Spent:       $[spent]
+  Total Committed:   $[committed]
+  Days Remaining:    [N] days ([N]% of plan period elapsed)
+
+  Progress bar: [SPENT |||||||||||||| COMMITTED --------] [AVAILABLE ...........]
+                Showing proportional use of total plan value
+
+BUDGET BREAKDOWN TABLE
+-----------------------
+One row per support category:
+
+  Column            | Description
+  ------------------|-----------------------------------------------------------
+  Category          | Icon + category number + category name
+  Budget Type       | Core / Capital / Capacity Building (with colour coding)
+  Allocated         | Total approved budget for this category
+  Spent             | Amount paid/claimed to date
+  Committed         | Amount in active service agreements/bookings not yet claimed
+  Available         | Allocated - Spent - Committed
+  % Used            | (Spent + Committed) / Allocated × 100
+  Status            | Progress bar + colour indicator (green/amber/red)
+  Actions           | Quick links: View transactions | Add line item | Create booking
+
+STATUS COLOUR CODING
+---------------------
+  Green  (< 75% used):  On track
+  Amber  (75-90% used): Use with caution
+  Red    (> 90% used):  Near limit - review required
+  Purple (> 100% used): Overspent - alert
+
+PACE BUDGET VIEW TOGGLE
+------------------------
+Toggle between:
+  - Detailed View: All 15 categories individually
+  - PACE View: Grouped into 3 PACE budgets (Core | Capital | Capacity Building)
+
+PACE VIEW LAYOUT:
+  [CORE SUPPORTS BUDGET]
+    Allocated: $XX,XXX.XX | Spent: $XX,XXX.XX | Available: $XX,XXX.XX
+    ▼ Daily Life (Cat 01): $... | ▼ Transport (Cat 02): $... | etc.
+
+  [CAPITAL SUPPORTS BUDGET]
+    Allocated: $XX,XXX.XX | Spent: $XX,XXX.XX | Available: $XX,XXX.XX
+    ▼ Assistive Technology (Cat 05): $... | ▼ Home Mods (Cat 06): $...
+
+  [CAPACITY BUILDING BUDGET]
+    Allocated: $XX,XXX.XX | Spent: $XX,XXX.XX | Available: $XX,XXX.XX
+    ▼ Support Coordination (Cat 07): $... | ▼ Daily Living (Cat 14): $... | etc.
+
+BUDGET ALERTS
+-------------
+Displayed as banners or inline alerts:
+
+1. Low Balance Alert    - Category budget < 10% remaining (or < $500 remaining)
+2. Overspent Alert      - Available amount is negative
+3. Uncommitted Funds    - > $1,000 unspent and plan expires within 90 days
+4. Service Gap          - Category has allocation but no service agreements
+5. Plan Expiry          - Plan expires within 30 / 60 / 90 days
+6. Sync Warning         - Budget data not synced with NDIS in > 48 hours
+
+TRANSACTION DRILL-DOWN
+-----------------------
+Clicking on a category row expands to show:
+  - Service agreements linked to that category (amount committed)
+  - Recent line items / invoices (date, provider, amount, status)
+  - Service bookings (NDIS booking number, start/end, booked/remaining)
+  - "View all transactions" link → dedicated transactions page with filters
+
+EXPORT OPTIONS
+--------------
+- Export budget summary: CSV or PDF
+- Export transaction list: CSV
+- Budget report for plan review: formatted PDF with all categories, spending, goals summary
+
+PLAN MANAGEMENT NOTE
+---------------------
+- Plan Managed: CRM shows claimed invoices; plan manager portal is source of truth
+- Agency Managed: NDIS agency processes all claims; CRM shows approved service bookings
+- Self Managed: Participant claims; CRM shows recorded payments
+- Combination: Per-category management type; each category shows appropriate data
+
+DATA FRESHNESS
+--------------
+- CRM budget data is based on manually entered/imported data
+- A "Last synced" timestamp is shown (if NDIS API sync is configured)
+- Manual refresh button to trigger sync (if API available)
+- Prominent warning if data is more than 48 hours old
+
+PERMISSIONS
+-----------
+- View budget: assigned support coordinator, team leader, admin
+- Edit allocations: admin, team leader
+- View transaction details: assigned coordinator + admin
+- Export budget report: all staff with access to the participant

@@ -1,0 +1,179 @@
+ADD NDIS PLAN MODAL - SPECIFICATION
+=====================================
+NDIS CRM System | docs/specs/add-ndis-plan-modal.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+The Add NDIS Plan Modal is a multi-step form used to add a new NDIS plan to
+a participant's profile. It can be triggered when:
+  - A new participant is onboarded (no existing plan)
+  - A participant's existing plan is renewed or replaced
+  - A plan review results in a new approved plan
+
+The modal steps the user through entering plan details, budget allocations,
+and goals before saving the plan.
+
+TRIGGER POINTS
+--------------
+- Participant Profile > Plan & Budget tab > "Add Plan" button
+- Participant Profile > Overview tab > alert banner "No Active Plan" > "Add Plan" CTA
+- Onboarding wizard > Step 3: Plan Details
+- Plans list page > "New Plan" button (selecting participant first)
+
+MODAL STRUCTURE
+---------------
+Multi-step modal with progress indicator:
+
+  Step 1: Plan Details
+  Step 2: Budget Allocations
+  Step 3: Goals (optional)
+  Step 4: Review & Save
+
+Step navigation: Back | Next | Save buttons
+Progress indicator: Step circles at top (1 → 2 → 3 → 4)
+Cancel: X button (top right) with confirmation if data entered
+
+STEP 1: PLAN DETAILS
+--------------------
+Fields:
+
+  Plan Period *
+    Start Date:     [date picker]       (required)
+    End Date:       [date picker]       (required)
+    Validation: end must be after start; typical NDIS plan is 12 months
+
+  NDIS Plan Reference
+    Plan Number:    [text field]        (optional - from NDIS plan document)
+
+  Plan Status *
+    [dropdown]  Active | Pending | Inactive
+    Default: Active
+
+  Management Type *
+    [dropdown]  Plan Managed | Agency Managed | Self Managed | Combination
+    Default: Plan Managed
+
+  If Combination selected: show per-category management type in Step 2
+
+  Plan Manager (if Plan Managed)
+    [searchable dropdown - provider list filtered to registered plan managers]
+    Provider name + ABN displayed
+
+  NDIS Office / Planner
+    NDIS Office:        [text field]    (optional)
+    Planner Name:       [text field]    (optional)
+    Planner Phone:      [text field]    (optional)
+
+  Plan Review Date
+    [date picker]  (optional - typically 12 months from start or as specified)
+
+  Plan Notes
+    [textarea]     (optional - internal notes about the plan)
+
+STEP 2: BUDGET ALLOCATIONS
+---------------------------
+Table showing all 15 NDIS support categories:
+
+  Column layout:
+    Category # | Category Name | Budget Type | Allocated Amount | Management Type (if combination)
+
+  For each row:
+    - Category name is pre-populated (read only)
+    - Allocated Amount: currency input field (default: $0.00)
+    - Enter 0 for categories not included in this plan
+    - If Combination management: per-row management type dropdown
+
+  Running totals at bottom:
+    Core Supports Total:          $[sum of Cat 01-04]
+    Capital Supports Total:       $[sum of Cat 05-06]
+    Capacity Building Total:      $[sum of Cat 07-15]
+    ─────────────────────────────
+    TOTAL PLAN VALUE:             $[grand total]
+
+  Import option:
+    "Import from NDIS Plan PDF" button (future feature - OCR extraction)
+    "Copy from previous plan" button (if participant has prior plan)
+
+STEP 3: GOALS (OPTIONAL)
+-------------------------
+Add plan goals for the new plan period.
+
+  "Add Goal" button: opens inline row or sub-modal:
+    Goal Title *      [text field]
+    Goal Domain       [dropdown] Daily Living | Relationships | Health | Learning | Work | Community | Choice & Control
+    Goal Type         [radio] Short Term | Long Term
+    Description       [textarea]
+    Target Date       [date picker]
+
+  Goal list displays added goals in a table.
+  Goals are optional - coordinator can skip this step.
+  Goals can also be added after plan creation from the Goals tab.
+
+STEP 4: REVIEW & SAVE
+----------------------
+Summary of all entered data:
+
+  Plan Details:
+    Period: [start] to [end] | Status: [status] | Management: [type]
+
+  Budget Summary:
+    Table of categories with non-zero allocations
+    Total Plan Value: $[total]
+
+  Goals:
+    List of added goals (or "No goals added")
+
+  Validation errors displayed inline (must resolve before Save)
+
+  Actions:
+    [Back]   - Return to previous step
+    [Save Plan]  - Create the plan record
+    [Save & Add Service Agreements] - Save plan and open new service agreement wizard
+
+VALIDATION
+----------
+Step 1:
+  - Start date: required; must be today or in the past (active plan) or future (pending)
+  - End date: required; must be after start date
+  - End date: warn if gap from previous plan end date (possible coverage gap)
+  - End date: warn if overlap with existing active plan
+  - Management type: required
+
+Step 2:
+  - At least one category must have an allocation > $0
+  - Allocations must be positive numbers
+  - No maximum validation (plans can be any value)
+  - Warn if total plan value is significantly different from previous plan (>50% change)
+
+Step 3 (if goals entered):
+  - Goal title: required
+  - Goal domain: required
+  - Target date: must be within plan period (warning if outside)
+
+PLAN OVERLAP / GAP DETECTION
+-----------------------------
+When entering plan dates:
+  - If new plan start date is more than 7 days after previous plan end:
+    → Show warning: "Gap detected between [prev end date] and [new start date]"
+  - If new plan start date overlaps with an active plan:
+    → Show error: "Overlap with existing plan [plan period]. Please check dates."
+  - On save, previous active plan is automatically set to 'superseded'
+
+POST-SAVE ACTIONS
+-----------------
+On successful save:
+  - Modal closes
+  - Participant profile refreshes
+  - Success toast: "NDIS Plan [period] added successfully"
+  - Budget tab shows new plan with $0 spent
+  - If previous plan existed: plan history updated
+
+If Save & Add Service Agreements selected:
+  - Redirect to new service agreement wizard pre-populated with participant + new plan
+
+PERMISSIONS
+-----------
+  - Add plan: support coordinator (for their participants), team leader, admin
+  - Edit plan: team leader, admin
+  - Delete plan: admin only (with audit log entry)

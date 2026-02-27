@@ -1,0 +1,128 @@
+PRODA BUDGET MAPPING
+=====================
+NDIS CRM System | docs/specs/proda-budget-mapping.txt
+Last Updated: 2024-07
+
+OVERVIEW
+--------
+PRODA (Provider Registration and Online Directories and Agreements) is the
+Australian Government's identity verification and authentication system used
+to access NDIS provider portals. It is used by:
+  - NDIS registered providers
+  - Plan managers
+  - Support coordinators (to submit claims on behalf of plan-managed participants)
+
+The NDIS myplace provider portal is accessed via PRODA credentials.
+
+This document outlines how PRODA service bookings and claims map to the
+CRM budget tracking system.
+
+PRODA / myplace BUDGET STRUCTURE
+----------------------------------
+The myplace provider portal organises NDIS funding using the same 15 support
+categories as PACE, but with a focus on service bookings and payment claiming.
+
+Key PRODA concepts:
+
+SERVICE BOOKINGS
+  - A service booking is a commitment of funds between a participant plan
+    and a specific provider for a specific support category
+  - Created by either the provider or the support coordinator
+  - Reserves funds from the participant's plan budget
+  - Can be created for a fixed amount or for a specified period
+
+SERVICE BOOKING TYPES
+  - Flexible: Provider can claim up to the booked amount, within the date range
+  - Fixed: For specific supports with fixed dates/quantities
+
+PAYMENT CLAIMING
+  - Providers submit payment requests against service bookings
+  - Claims are processed by the NDIS (usually within 3-5 business days)
+  - Claims include: support item number, quantity, unit price, service date
+
+PRODA SUPPORT CATEGORY NUMBERS
+--------------------------------
+The following category numbers are used in PRODA/myplace portal:
+
+Category | Name                                          | Budget Type
+---------|-----------------------------------------------|-------------
+01       | Assistance with Daily Life                    | Core
+02       | Transport                                     | Core (Fixed)
+03       | Consumables                                   | Core
+04       | Assistance with Social & Community Participation | Core
+05       | Assistive Technology                          | Capital
+06       | Home Modifications                            | Capital
+07       | Support Coordination                          | Capacity Building
+08       | Improved Living Arrangements                  | Capacity Building
+09       | Increased Social & Community Participation    | Capacity Building
+10       | Finding and Keeping a Job                     | Capacity Building
+11       | Improved Health and Wellbeing                 | Capacity Building
+12       | Improved Learning                             | Capacity Building
+13       | Improved Life Choices (incl. Plan Management) | Capacity Building
+14       | Improved Daily Living Skills (Therapies)      | Capacity Building
+15       | Improved Relationships                        | Capacity Building
+
+PRODA CRM FIELD MAPPING
+------------------------
+CRM Field                      | myplace/PRODA Field
+-------------------------------|----------------------------------
+service_bookings.ndis_booking_number  | Service Booking Number
+service_bookings.allocated_amount     | Service Booking Amount
+service_bookings.remaining_amount     | Remaining Service Booking Amount
+service_bookings.booking_start_date   | Service Booking Start Date
+service_bookings.booking_end_date     | Service Booking End Date
+plan_line_items.claim_status          | Payment Request Status
+plan_line_items.invoice_number        | Provider Invoice / Reference Number
+ndis_payment_requests.claim_reference | NDIS Claim Reference Number
+providers.provider_number             | Provider NDIS Registration Number
+
+REGISTRATION GROUPS
+--------------------
+PRODA uses Registration Groups to categorise the types of supports a provider
+is registered to deliver. A provider must hold registration in the relevant
+group to be paid by the NDIS (for agency-managed participants).
+
+Key registration groups relevant to support coordination:
+  0107 - Specialist Support Coordination
+  0134 - Support Coordination
+  0133 - Management of Funding (Plan Management)
+  0119 - Therapeutic Supports
+  0105 - Assistance with Daily Personal Activities
+  0125 - Specialist Disability Accommodation (SDA)
+  0136 - Group and Centre Based Activities
+
+CRM INTEGRATION WITH PRODA
+---------------------------
+The CRM does not directly integrate with PRODA (NDIS API access required).
+Instead, the CRM:
+
+1. Stores service booking numbers entered manually by coordinators
+2. Tracks budget commitments based on service agreement values
+3. Records payment status based on invoices received
+4. Flags discrepancies between CRM committed amounts and PRODA bookings
+
+MANUAL SYNC WORKFLOW
+---------------------
+Step 1: Coordinator logs into NDIS myplace via PRODA credentials
+Step 2: Checks service booking balance for participant
+Step 3: Updates CRM service booking record with current PRODA balance
+Step 4: CRM calculates: Available = Plan Budget - Committed - Paid
+
+PRODA CLAIM STATUS VALUES
+--------------------------
+CRM Status       | PRODA Status        | Description
+-----------------|---------------------|------------------------------------------
+pending          | Not submitted        | Invoice received, not yet claimed in PRODA
+submitted        | Submitted            | Claim submitted in myplace/PRODA
+approved         | Payment approved     | NDIA has approved the payment
+rejected         | Payment rejected     | NDIA rejected - reason must be recorded
+paid             | Payment made         | Funds transferred to provider
+cancelled        | Claim cancelled      | Claim withdrawn by provider
+
+COMPLIANCE NOTES
+----------------
+- Support coordinators must not have access to providers' PRODA accounts
+- Claims must match the support item, date, quantity and price agreed in service booking
+- Short notice cancellations: claimable only if cancellation policy included in service agreement
+- Provider travel: claimable only if agreed in service booking and within price guide limits
+- Non-face-to-face: limited to specific support items, requires documentation
