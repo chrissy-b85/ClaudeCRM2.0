@@ -3,7 +3,7 @@
 
 -- Document categories
 CREATE TABLE IF NOT EXISTS document_categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     category_name VARCHAR(100) UNIQUE NOT NULL,
     category_description TEXT,
     is_required BOOLEAN DEFAULT FALSE,
@@ -31,7 +31,7 @@ ON CONFLICT (category_name) DO NOTHING;
 
 -- Participant documents
 CREATE TABLE IF NOT EXISTS participant_documents (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
     plan_id UUID REFERENCES ndis_plans(id),
     service_agreement_id UUID REFERENCES service_agreements(id),
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS participant_documents (
 
 -- Document access log
 CREATE TABLE IF NOT EXISTS document_access_log (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID NOT NULL REFERENCES participant_documents(id) ON DELETE CASCADE,
     accessed_by UUID NOT NULL REFERENCES users(id),
     access_type VARCHAR(50) NOT NULL, -- 'view', 'download', 'update', 'delete'
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS document_access_log (
 
 -- Document templates (reusable document templates)
 CREATE TABLE IF NOT EXISTS document_templates (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     template_name VARCHAR(255) NOT NULL,
     template_category VARCHAR(100),
     template_type VARCHAR(50) DEFAULT 'pdf', -- 'pdf', 'docx', 'html'

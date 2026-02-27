@@ -3,7 +3,7 @@
 
 -- Bank accounts table (shared for participants and providers)
 CREATE TABLE IF NOT EXISTS bank_accounts (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     entity_type VARCHAR(20) NOT NULL, -- 'participant', 'provider'
     entity_id UUID NOT NULL,
     account_name VARCHAR(255) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS bank_accounts (
 
 -- Payment schedules for plan-managed participants
 CREATE TABLE IF NOT EXISTS payment_schedules (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id UUID NOT NULL REFERENCES ndis_plans(id) ON DELETE CASCADE,
     schedule_name VARCHAR(255),
     frequency VARCHAR(50) NOT NULL DEFAULT 'monthly', -- 'weekly', 'fortnightly', 'monthly', 'quarterly', 'as_needed'
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS payment_schedules (
 
 -- Payment transactions
 CREATE TABLE IF NOT EXISTS payment_transactions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_line_item_id UUID REFERENCES plan_line_items(id),
     payment_schedule_id UUID REFERENCES payment_schedules(id),
     transaction_type VARCHAR(50) NOT NULL, -- 'payment', 'refund', 'adjustment'
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS payment_transactions (
 
 -- NDIS payment request records (for plan-managed participants)
 CREATE TABLE IF NOT EXISTS ndis_payment_requests (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id UUID NOT NULL REFERENCES ndis_plans(id),
     request_date DATE NOT NULL DEFAULT CURRENT_DATE,
     support_item_id UUID REFERENCES support_items(id),

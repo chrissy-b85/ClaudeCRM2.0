@@ -103,7 +103,7 @@ done
 ## Technology Stack
 
 - **Database**: PostgreSQL 14+
-- **UUID**: `uuid-ossp` extension required
+- **UUID**: `pgcrypto` extension required (`gen_random_uuid()`)
 - **Backend**: (TBD - Node.js / Python / PHP)
 - **Frontend**: (TBD - React / Vue)
 

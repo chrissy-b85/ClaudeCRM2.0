@@ -3,7 +3,7 @@
 
 -- Price guide versions
 CREATE TABLE IF NOT EXISTS price_guide_versions (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     version_name VARCHAR(100) NOT NULL,
     effective_date DATE NOT NULL,
     end_date DATE,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS price_guide_versions (
 
 -- Support item prices (by price guide version and state/territory)
 CREATE TABLE IF NOT EXISTS support_item_prices (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     price_guide_version_id UUID NOT NULL REFERENCES price_guide_versions(id) ON DELETE CASCADE,
     support_item_id UUID NOT NULL REFERENCES support_items(id) ON DELETE CASCADE,
     state_territory VARCHAR(10) NOT NULL DEFAULT 'National', -- 'ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA', 'Remote', 'VeryRemote', 'National'
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS support_item_prices (
 
 -- Plan line items (actual service bookings/claims)
 CREATE TABLE IF NOT EXISTS plan_line_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_budget_category_id UUID NOT NULL REFERENCES plan_budget_categories(id) ON DELETE CASCADE,
     support_item_id UUID NOT NULL REFERENCES support_items(id),
     provider_id UUID REFERENCES providers(id),
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS plan_line_items (
 
 -- Price guide import log
 CREATE TABLE IF NOT EXISTS price_guide_import_log (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     price_guide_version_id UUID REFERENCES price_guide_versions(id),
     import_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     imported_by UUID REFERENCES users(id),

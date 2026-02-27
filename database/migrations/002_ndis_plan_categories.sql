@@ -3,7 +3,7 @@
 
 -- NDIS support categories (aligned with NDIS price guide)
 CREATE TABLE IF NOT EXISTS support_categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     category_number INTEGER UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     short_name VARCHAR(100),
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS support_categories (
 
 -- NDIS plans table
 CREATE TABLE IF NOT EXISTS ndis_plans (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
     plan_number VARCHAR(50),
     plan_start_date DATE NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS ndis_plans (
 
 -- NDIS plan budget allocations by category
 CREATE TABLE IF NOT EXISTS plan_budget_categories (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_id UUID NOT NULL REFERENCES ndis_plans(id) ON DELETE CASCADE,
     support_category_id UUID NOT NULL REFERENCES support_categories(id),
     allocated_amount NUMERIC(12, 2) NOT NULL DEFAULT 0.00,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS plan_budget_categories (
 
 -- Plan funding sources
 CREATE TABLE IF NOT EXISTS plan_funding_sources (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     plan_budget_category_id UUID NOT NULL REFERENCES plan_budget_categories(id) ON DELETE CASCADE,
     funding_source VARCHAR(50) NOT NULL, -- 'ndis', 'state', 'other'
     amount NUMERIC(12, 2) NOT NULL DEFAULT 0.00,

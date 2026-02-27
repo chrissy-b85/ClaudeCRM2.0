@@ -3,7 +3,7 @@
 
 -- Service agreements
 CREATE TABLE IF NOT EXISTS service_agreements (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     participant_id UUID NOT NULL REFERENCES participants(id) ON DELETE CASCADE,
     provider_id UUID NOT NULL REFERENCES providers(id),
     plan_id UUID REFERENCES ndis_plans(id),
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS service_agreements (
 
 -- Service agreement line items (services included in the agreement)
 CREATE TABLE IF NOT EXISTS service_agreement_items (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     service_agreement_id UUID NOT NULL REFERENCES service_agreements(id) ON DELETE CASCADE,
     support_item_id UUID NOT NULL REFERENCES support_items(id),
     support_category_id UUID REFERENCES support_categories(id),
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS service_agreement_items (
 
 -- Service agreement amendments
 CREATE TABLE IF NOT EXISTS service_agreement_amendments (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     service_agreement_id UUID NOT NULL REFERENCES service_agreements(id) ON DELETE CASCADE,
     amendment_number INTEGER NOT NULL DEFAULT 1,
     amendment_date DATE NOT NULL DEFAULT CURRENT_DATE,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS service_agreement_amendments (
 
 -- Service bookings (NDIS portal service booking records)
 CREATE TABLE IF NOT EXISTS service_bookings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     service_agreement_id UUID REFERENCES service_agreements(id),
     plan_id UUID NOT NULL REFERENCES ndis_plans(id),
     provider_id UUID NOT NULL REFERENCES providers(id),
